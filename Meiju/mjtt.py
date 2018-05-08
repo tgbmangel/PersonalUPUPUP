@@ -16,6 +16,12 @@ p.encoding='gbk'
 print(p.encoding)
 HTML_content=p.text
 
+h=BeautifulSoup(HTML_content,'lxml')
+ls=h.find_all('a',href=re.compile('ed2k'))
+for x in ls:
+    print(x)
+    print(x.attrs['href'])
+
 A=re.findall(ed2k_url,HTML_content)
 for x in A:
     print(x)
