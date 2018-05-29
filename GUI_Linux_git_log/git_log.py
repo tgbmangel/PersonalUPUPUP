@@ -42,6 +42,7 @@ class Chat_UI():
         try:
             self.ssh.connect(hostname=host_ip, port=22, username=host_user_name, password=host_password)
             self.login_button.config(state='disable',text='已登录')
+            self.login_out_button.config(state='active')
             if host_ip=="10.16.3.26":
                 self.git_path['values'] = (
                     "/data/javaweb/smart-city-education-teaching",
@@ -60,9 +61,10 @@ class Chat_UI():
                     "/data/javaweb/smart-city-auth"
                 )
         except Exception as e:
-            print(e)
+            messagebox.showinfo("info", e)
     def login_out(self):
         self.ssh.close()
+        self.login_button.config(state='active', text='登录')
     def gitlog(self):
         if not self.git_path.get():
             messagebox.showinfo("path is null",'git path is null')
@@ -77,7 +79,7 @@ class Chat_UI():
             for x in all_outs:
                 self.git_log_text.insert(tk.END, x)
         except Exception as e:
-            print(e)
+            messagebox.showinfo("info", e)
     def ui_controls(self):
         logon_frame=tk.LabelFrame(self.root,width=300, height=100, text='登录')
         host_ip_lable=tk.Label(logon_frame,text='ip addr:')
@@ -91,6 +93,7 @@ class Chat_UI():
         user_name_entry=tk.Entry(logon_frame,textvariable=self.user_name)
         password_entry=tk.Entry(logon_frame,textvariable=self.password,show='*')
         self.login_button=tk.Button(logon_frame,text='登录',command=self.login_ssh)
+        self.login_out_button = tk.Button(logon_frame, text='退出', command=self.login_out,state='disable')
         #
         path_git_frame=tk.LabelFrame(self.root,width=700, height=80,text='path')
         teaching_lable = tk.Label(path_git_frame, text='teaching path:')
@@ -110,6 +113,7 @@ class Chat_UI():
         password_lable.place(x=0,y=40)
         password_entry.place(x=80,y=40)
         self.login_button.place(x=240,y=20,height=22)
+        self.login_out_button.place(x=240,y=40,height=22)
         #
         path_git_frame.grid(row=1, column=0,columnspan=4)
         teaching_lable.place(x=0,y=0,width=100)
