@@ -75,14 +75,19 @@ class Chat_UI():
         cmd='cd {}'.format(self.git_path.get())
         cmd1='git log --date=short  --pretty=format:"%h -%an- %ad -%s"'
         try:
-            stdin, stdout, stderr = self.ssh.exec_command('{};{}'.format(cmd,cmd1)) #命令行需要在切换目录后马上执行不然会重新回到HOME目录，可能是session一样的原因
+            # 命令行需要在切换目录后马上执行不然会重新回到HOME目录，可能是session一样的原因
+            stdin, stdout, stderr = self.ssh.exec_command('{};{}'.format(cmd,cmd1))
             # print(stderr.readlines())
             all_outs=stdout.readlines()
             self.git_log_text.delete(0.0,tk.END)
             for x in all_outs:
                 self.git_log_text.insert(tk.END, x)
+            if not all_outs:
+                for x in stderr.readlines():
+                    self.git_log_text.insert(tk.END, x)
         except Exception as e:
-            messagebox.showinfo("info", e)
+            self.git_log_text.delete(0.0, tk.END)
+            self.git_log_text.insert(tk.END, '{}\n请确认服务器连接正常。'.format(e))
     def ui_controls(self):
         login_frame=tk.LabelFrame(self.root,width=300, height=100, text='登录',relief='groove')
         host_ip_lable=tk.Label(login_frame,text='ip addr:')
